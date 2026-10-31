@@ -1,0 +1,20 @@
+# Deployment note: the Python worker source lives in ../backend (see backend/src/worker.py).
+# Run pywrangler from the backend/ directory for deployment; this file mirrors the config.
+name = "cloudshare-backend"
+main = "../backend/src/worker.py"
+compatibility_flags = ["python_workers"]
+compatibility_date = "2026-10-30"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cloudshare-db"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "cloudshare-files"
+
+[vars]
+ENVIRONMENT = "production"
+FRONTEND_BASE_URL = "https://your-frontend.example.com"
+MAX_FILE_SIZE_BYTES = "104857600"

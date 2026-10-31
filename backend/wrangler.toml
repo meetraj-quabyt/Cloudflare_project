@@ -1,0 +1,18 @@
+name = "cloudshare-backend"
+main = "src/worker.py"
+compatibility_flags = ["python_workers"]
+compatibility_date = "2026-10-30"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "cloudshare-db"
+database_id = "REPLACE_WITH_D1_DATABASE_ID"
+
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "cloudshare-files"
+
+[vars]
+ENVIRONMENT = "production"
+FRONTEND_BASE_URL = "https://your-frontend.example.com"
+MAX_FILE_SIZE_BYTES = "104857600"
