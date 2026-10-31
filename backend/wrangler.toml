@@ -8,11 +8,12 @@ binding = "DB"
 database_name = "cloudshare-db"
 database_id = "951b7f52-83ff-4b5e-b881-cb72820e4e4e"
 
-[[r2_buckets]]
-binding = "R2"
-bucket_name = "cloudshare-files"
+# [[r2_buckets]]
+# binding = "R2"
+# bucket_name = "cloudshare-files"
 
 [vars]
 ENVIRONMENT = "production"
-FRONTEND_BASE_URL = "https://your-frontend.example.com"
+FRONTEND_BASE_URL = "https://cloudshare-app.pages.dev"
+ALLOWED_ORIGINS = "https://cloudshare-app.pages.dev,http://localhost:5173,*"
 MAX_FILE_SIZE_BYTES = "104857600"

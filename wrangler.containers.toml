@@ -37,9 +37,10 @@ database_name = "cloudshare-db"
 database_id = "951b7f52-83ff-4b5e-b881-cb72820e4e4e"
 
 # ── Cloudflare R2 (object storage) ───────────────────────────────────────────
-[[r2_buckets]]
-binding = "R2"
-bucket_name = "cloudshare-files"
+# (Uncomment once R2 is enabled in your Cloudflare dashboard)
+# [[r2_buckets]]
+# binding = "R2"
+# bucket_name = "cloudshare-files"
 
 [vars]
 ENVIRONMENT = "production"
