@@ -2,23 +2,41 @@ name = "cloudshare"
 main = "worker/index.js"
 compatibility_date = "2026-10-30"
 
+# ── Backend container (FastAPI / uvicorn) ────────────────────────────────────
 [[containers]]
-name = "backend"
-image = "./backend"
-port = 8000
-instance_count = 1
+class_name = "BackendContainer"
+image = "./backend/Dockerfile"
+max_instances = 2
 
+[[durable_objects.bindings]]
+name = "BACKEND"
+class_name = "BackendContainer"
+
+[exports.BackendContainer]
+type = "durable-object"
+storage = "sqlite"
+
+# ── Frontend container (nginx serving React) ─────────────────────────────────
 [[containers]]
-name = "frontend"
-image = "./frontend"
-port = 80
-instance_count = 1
+class_name = "FrontendContainer"
+image = "./frontend/Dockerfile"
+max_instances = 2
 
+[[durable_objects.bindings]]
+name = "FRONTEND"
+class_name = "FrontendContainer"
+
+[exports.FrontendContainer]
+type = "durable-object"
+storage = "sqlite"
+
+# ── Cloudflare D1 (serverless SQL) ───────────────────────────────────────────
 [[d1_databases]]
 binding = "DB"
 database_name = "cloudshare-db"
 database_id = "951b7f52-83ff-4b5e-b881-cb72820e4e4e"
 
+# ── Cloudflare R2 (object storage) ───────────────────────────────────────────
 [[r2_buckets]]
 binding = "R2"
 bucket_name = "cloudshare-files"
@@ -26,3 +44,4 @@ bucket_name = "cloudshare-files"
 [vars]
 ENVIRONMENT = "production"
 CF_D1_DATABASE_ID = "951b7f52-83ff-4b5e-b881-cb72820e4e4e"
+CLOUDFLARE_ACCOUNT_ID = "b3f4469930a634db14c084aca490269d"
