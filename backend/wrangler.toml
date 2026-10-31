@@ -6,7 +6,7 @@ compatibility_date = "2026-10-30"
 [[d1_databases]]
 binding = "DB"
 database_name = "cloudshare-db"
-database_id = "REPLACE_WITH_D1_DATABASE_ID"
+database_id = "951b7f52-83ff-4b5e-b881-cb72820e4e4e"
 
 [[r2_buckets]]
 binding = "R2"

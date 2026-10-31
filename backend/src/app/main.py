@@ -17,9 +17,21 @@ log = get_logger("main")
 
 
 def build_database(env=None) -> Database:
+    import os
+
+    # Container mode: use D1 REST API when running inside a Cloudflare Container
+    if os.getenv("CF_CONTAINER") == "1" or (
+        os.getenv("CLOUDFLARE_D1_TOKEN") and os.getenv("CF_D1_DATABASE_ID")
+    ):
+        from app.repositories.db_d1_rest import D1RestDatabase
+
+        return D1RestDatabase()  # type: ignore[return-value]
+
+    # Worker mode: use D1 binding
     if env is not None and getattr(env, "DB", None) is not None:
         return Database(d1_binding=env.DB)
-    # local dev: sqlite file
+
+    # Local dev: sqlite fallback
     url = settings.database_url
     path = url
     if url.startswith("sqlite"):

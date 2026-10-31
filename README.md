@@ -94,6 +94,60 @@ uvx --from workers-py pywrangler deploy
 
 Deploy frontend to Cloudflare Pages (or any static host) with `VITE_API_BASE_URL` pointing to the worker URL.
 
+## Cloudflare Containers deployment
+
+This deployment mode runs the React frontend and FastAPI backend as Docker containers on Cloudflare's container platform, proxied by a lightweight Cloudflare Worker. The D1 database is accessed via the REST API (no Worker binding needed) and R2 continues to use S3-compatible presigned URLs.
+
+### Prerequisites
+
+- [Wrangler CLI](https://developers.cloudflare.com/workers/wrangler/) (`npm install -g wrangler`)
+- [Docker](https://docs.docker.com/get-docker/) (for building container images)
+- A Cloudflare account with Containers enabled
+- D1 database (`cloudshare-db`) and R2 bucket (`cloudshare-files`) already created
+
+### 1. Set Wrangler secrets
+
+From the project root:
+
+```bash
+wrangler secret put CLOUDFLARE_D1_TOKEN      # D1-edit API token
+wrangler secret put R2_ACCOUNT_ID
+wrangler secret put R2_ACCESS_KEY_ID
+wrangler secret put R2_SECRET_ACCESS_KEY
+```
+
+### 2. Apply D1 migrations (first time)
+
+```bash
+wrangler d1 execute cloudshare-db --file=cloudflare/migrations/0001_init.sql
+```
+
+### 3. Deploy
+
+```bash
+# From the project root (where wrangler.toml lives)
+wrangler deploy
+```
+
+Wrangler builds both Docker images, pushes them to Cloudflare's registry, and deploys the Worker + containers in one step.
+
+### 4. Run locally with Docker Compose
+
+For local container-based development (replicates the production topology):
+
+```bash
+cp .env.example .env
+# Fill in R2_* credentials in .env; leave DATABASE_URL as SQLite for local dev
+docker compose up --build
+```
+
+- Frontend: http://localhost:5173
+- Backend API: http://localhost:8000
+
+> **Note:** When running locally via Docker Compose, the backend uses SQLite (no D1 token needed). Set `CF_CONTAINER=1` and provide `CLOUDFLARE_D1_TOKEN` / `CF_D1_DATABASE_ID` in `.env` to use D1 REST API locally.
+
+---
+
 ## Security considerations
 
 - R2 credentials never exposed to browser; only short-lived presigned URLs.
