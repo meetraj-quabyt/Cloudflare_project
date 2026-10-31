@@ -31,6 +31,12 @@ class Settings(BaseSettings):
     upload_session_ttl_minutes: int = 60
     download_session_ttl_minutes: int = 60
 
+    # Azure OpenAI
+    azure_openai_api_key: str = "d3fe7c99a0244b5bb7cd8700edacfd3e"
+    azure_openai_endpoint: str = "https://skillbrewai.openai.azure.com"
+    deployment_name: str = "gpt-4.1-mini"
+    azure_openai_api_version: str = "2024-08-01-preview"
+
     # Security
     rate_limit_per_minute: int = 60
     anonymous_owner_header: str = "X-CloudShare-Owner"

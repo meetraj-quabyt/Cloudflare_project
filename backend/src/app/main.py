@@ -7,7 +7,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api.v1 import activity, downloads, files, health, shares, uploads
+from app.api.v1 import activity, chat, downloads, files, health, shares, uploads
 from app.core.config import settings
 from app.core.logging import get_logger, setup_logging
 from app.repositories.db import Database
@@ -75,6 +75,10 @@ def create_app(env=None) -> FastAPI:
             "MAX_FILE_SIZE_BYTES": "max_file_size_bytes",
             "ALLOWED_ORIGINS": "allowed_origins",
             "FRONTEND_ORIGIN": "frontend_origin",
+            "AZURE_OPENAI_API_KEY": "azure_openai_api_key",
+            "AZURE_OPENAI_ENDPOINT": "azure_openai_endpoint",
+            "DEPLOYMENT_NAME": "deployment_name",
+            "AZURE_OPENAI_API_VERSION": "azure_openai_api_version",
         }
         for env_key, field in mapping.items():
             val = getattr(env, env_key, None)
@@ -115,6 +119,7 @@ def create_app(env=None) -> FastAPI:
     app.include_router(shares.router, prefix="/api/v1")
     app.include_router(downloads.router, prefix="/api/v1")
     app.include_router(activity.router, prefix="/api/v1")
+    app.include_router(chat.router, prefix="/api/v1")
 
     @app.exception_handler(Exception)
     async def generic_exc(request: Request, exc: Exception):
